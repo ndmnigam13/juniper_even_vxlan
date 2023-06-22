@@ -1,0 +1,44 @@
+set system host-name Leaf-1
+set system root-authentication encrypted-password "$6$1Q1/vI1r$pBylOjSMcLahzbmwoUseMDI0jZv/fQwKVynOhjKABNs2A4gVKTYyGLHT43T9AK8EJFDtWBkXLh9JvoSwDIyTA/"
+set interfaces xe-0/0/0 unit 0 family inet address 192.168.10.2/30
+set interfaces xe-0/0/1 unit 0 family inet address 192.168.10.6/30
+set interfaces xe-0/0/8 unit 0 family ethernet-switching interface-mode access
+set interfaces xe-0/0/8 unit 0 family ethernet-switching vlan members v101
+set interfaces xe-0/0/9 unit 0 family ethernet-switching interface-mode access
+set interfaces xe-0/0/9 unit 0 family ethernet-switching vlan members v102
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces lo0 unit 0 family inet address 11.11.11.11/32 primary
+set policy-options policy-statement ECMP then load-balance per-packet
+set policy-options policy-statement ECMP then accept
+set policy-options policy-statement export_ibgp_lo0 term 1 from protocol direct
+set policy-options policy-statement export_ibgp_lo0 term 1 from route-filter 11.11.11.11/32 exact
+set policy-options policy-statement export_ibgp_lo0 term 1 then accept
+set routing-options forwarding-table export ECMP
+set routing-options forwarding-table chained-composite-next-hop ingress evpn
+set routing-options router-id 11.11.11.11
+set routing-options autonomous-system 65000
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export export_ibgp_lo0
+set protocols bgp group UNDERLAY local-as 65011
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 192.168.10.1 peer-as 65001
+set protocols bgp group UNDERLAY neighbor 192.168.10.5 peer-as 65002
+set protocols bgp group EVPN type internal
+set protocols bgp group EVPN local-address 11.11.11.11
+set protocols bgp group EVPN family evpn signaling
+set protocols bgp group EVPN local-as 65000
+set protocols bgp group EVPN multipath
+set protocols bgp group EVPN neighbor 2.2.2.2
+set protocols bgp group EVPN neighbor 1.1.1.1
+set protocols evpn encapsulation vxlan
+set protocols evpn multicast-mode ingress-replication
+set protocols evpn extended-vni-list all
+set switch-options vtep-source-interface lo0.0
+set switch-options route-distinguisher 11.11.11.11:10101
+set switch-options vrf-target target:65000:101
+set vlans v101 vlan-id 101
+set vlans v101 vxlan vni 10101
+set vlans v101 vxlan ingress-node-replication
+set vlans v102 vlan-id 102
+set vlans v102 vxlan vni 10102
+set vlans v102 vxlan ingress-node-replication

@@ -1,0 +1,53 @@
+set system host-name Spine-2
+set system root-authentication encrypted-password "$6$TqA5rQkm$X0jAf9qjv6nLqWHBedxC.I.4Pvz6HcoYbm9HWhqm5ik.PQvKWDPXawSTAEiFFALOY6GuuPrrPiR4U18moMT1//"
+set interfaces xe-0/0/0 unit 0 family inet address 192.168.10.13/30
+set interfaces xe-0/0/1 unit 0 family inet address 192.168.10.5/30
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces irb unit 101 family inet address 10.1.101.253/24 virtual-gateway-address 10.1.101.254
+set interfaces irb unit 101 virtual-gateway-v4-mac 00:aa:bb:cc:dd:12
+set interfaces irb unit 102 family inet address 10.1.102.253/24 virtual-gateway-address 10.1.102.254
+set interfaces irb unit 102 virtual-gateway-v4-mac 00:aa:bb:cc:dd:12
+set interfaces lo0 unit 0 family inet address 2.2.2.2/32 primary
+set policy-options policy-statement ECMP then load-balance per-packet
+set policy-options policy-statement ECMP then accept
+set policy-options policy-statement export_ibgp_lo0 term 1 from protocol direct
+set policy-options policy-statement export_ibgp_lo0 term 1 from route-filter 2.2.2.2/32 exact
+set policy-options policy-statement export_ibgp_lo0 term 1 then accept
+set routing-instances CUST_A instance-type vrf
+set routing-instances CUST_A interface irb.101
+set routing-instances CUST_A interface irb.102
+set routing-instances CUST_A route-distinguisher 2.2.2.2:101
+set routing-instances CUST_A vrf-target target:65000:101
+set routing-options forwarding-table export ECMP
+set routing-options forwarding-table chained-composite-next-hop ingress evpn
+set routing-options router-id 2.2.2.2
+set routing-options autonomous-system 65000
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export export_ibgp_lo0
+set protocols bgp group UNDERLAY local-as 65002
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 192.168.10.6 peer-as 65011
+set protocols bgp group UNDERLAY neighbor 192.168.10.14 peer-as 65012
+set protocols bgp group EVPN type internal
+set protocols bgp group EVPN local-address 2.2.2.2
+set protocols bgp group EVPN family evpn signaling
+set protocols bgp group EVPN cluster 2.2.2.2
+set protocols bgp group EVPN local-as 65000
+set protocols bgp group EVPN multipath
+set protocols bgp group EVPN neighbor 1.1.1.1
+set protocols bgp group EVPN neighbor 11.11.11.11
+set protocols bgp group EVPN neighbor 22.22.22.22
+set protocols evpn encapsulation vxlan
+set protocols evpn multicast-mode ingress-replication
+set protocols evpn extended-vni-list all
+set switch-options vtep-source-interface lo0.0
+set switch-options route-distinguisher 2.2.2.2:10101
+set switch-options vrf-target target:65000:101
+set vlans v101 vlan-id 101
+set vlans v101 l3-interface irb.101
+set vlans v101 vxlan vni 10101
+set vlans v101 vxlan ingress-node-replication
+set vlans v102 vlan-id 102
+set vlans v102 l3-interface irb.102
+set vlans v102 vxlan vni 10102
+set vlans v102 vxlan ingress-node-replication
