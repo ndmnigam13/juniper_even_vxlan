@@ -6,7 +6,7 @@ PoC Requirement:
   4.CUST_A vlans can talk to each other without Firewall inspection.
   5.CUST_A to CUST_B or CUST_B to CUST_A traffic must inspect by Firewall.
 Lab Diagram File: https://github.com/ndmnigam13/juniper_even_vxlan/blob/main/Juniper_evpn_vxlan.png
-Configuration File: 
+Configuration File: https://github.com/ndmnigam13/juniper_even_vxlan/tree/Configuration-File
 Open Task:
   • Configure CUST_B
   • Juniper vSRX Deployment and Configuration
