@@ -1,1 +1,15 @@
+Juniper even vxlan PoC
+PoC Requirement:
+  1.Two customers named as CUST_A and CUST_B
+  2.CUST_A contain two vlans as v101:10.1.101.0/24 and v102:10.1.102.0/24
+  3.CUST_B contain one vlan as v103:10.1.103.0/24
+  4.CUST_A vlans can talk to each other without Firewall inspection.
+  5.CUST_A to CUST_B or CUST_B to CUST_A traffic must inspect by Firewall.
+Lab Diagram File: 
+Configuration File: 
+Open Task:
+  • Configure CUST_B
+  • Juniper vSRX Deployment and Configuration
+  • Add Border Leaf switches for attaching Juniper vSRX
+  • Border Leaf switches configuration.
 
