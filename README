@@ -1,4 +1,5 @@
 Juniper even vxlan PoC
+
 PoC Requirement:
   1.Two customers named as CUST_A and CUST_B
   2.CUST_A contain two vlans as v101:10.1.101.0/24 and v102:10.1.102.0/24
@@ -7,9 +8,26 @@ PoC Requirement:
   5.CUST_A to CUST_B or CUST_B to CUST_A traffic must inspect by Firewall.
 Lab Diagram File: https://github.com/ndmnigam13/juniper_even_vxlan/blob/main/Juniper_evpn_vxlan.png
 Configuration File: https://github.com/ndmnigam13/juniper_even_vxlan/tree/Configuration-File
+
+Lab Preparation:
+
+•	Add vQFX RE and PFE in eve-ng or GNS3
+•	Connect RE and PFE with em1 interface.
+•	Connect all devices as per Lab diagram.
+•	Console to vQFX RE
+•	Steps to follow on all vQFX RE.
+  1.Go to edit and type delete and say ‘Yes’
+  2.set system root-authentication encrypted-password – set root password.
+  3.set interfaces em1 unit 0 family inet address 169.254.0.2/24 – This is required for talking RE to PEF as we did delete all default configuration hence, we need to apply this again.
+  4.set system host-name <hostname>
+  5.commit
+  6.request system power-off all-members.
+  7.Once all RE shutdown then start manually – This is required as we delete initial configuration and there is some bug in QFX virtual devices in eve-ng/GNS3 if we don’t power-off and power-on then traffic will not flow even though FPC and PIC are online.
+  8.Start copy given configuration as per given config file for each device and commit.
+  9.Add additional host devices per your choice, I used just given default Virtual PC with basic IP address configuration and tested with pic between them.
+
 Open Task:
   • Configure CUST_B
   • Juniper vSRX Deployment and Configuration
   • Add Border Leaf switches for attaching Juniper vSRX
   • Border Leaf switches configuration.
-
